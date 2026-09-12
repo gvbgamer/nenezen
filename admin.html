@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Funil Sueñitos</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; color: #2c3e50; }
+        .filters { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        input[type="date"], button { padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        button { background: #4aa0e5; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #3590d6; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .card h2 { margin-top: 0; font-size: 16px; color: #6c757d; text-transform: uppercase; letter-spacing: 1px; }
+        .stat { font-size: 32px; font-weight: bold; color: #2c3e50; margin: 10px 0 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
+        th { color: #6c757d; }
+        #loading { display: none; color: #4aa0e5; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Dashboard Sueñitos</h1>
+    </div>
+
+    <div class="filters">
+        <button onclick="setDateRange('today')" style="background: #6c757d;">Hoje</button>
+        <button onclick="setDateRange('7days')" style="background: #6c757d;">Últimos 7 Dias</button>
+        <button onclick="setDateRange('30days')" style="background: #6c757d;">Últimos 30 Dias</button>
+        <span style="margin: 0 10px; color: #ccc;">|</span>
+        <label>De: <input type="date" id="startDate"></label>
+        <label>Até: <input type="date" id="endDate"></label>
+        <button onclick="loadMetrics()" style="background: #28a745;">Buscar</button>
+        <span id="loading">Carregando dados do Firebase...</span>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2>Sessões Únicas</h2>
+            <div class="stat" id="totalSessions">0</div>
+        </div>
+        <div class="card">
+            <h2>Interação (Passaram da Etapa 1)</h2>
+            <div class="stat" id="firstStepInteraction">0%</div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 20px;">
+        <h2>Retenção do Funil (Gráfico)</h2>
+        <canvas id="retentionChart" height="80"></canvas>
+    </div>
+
+    <div class="card" style="margin-bottom: 20px;">
+        <h2>Acompanhamento do Funil</h2>
+        <table id="dropoffTable">
+            <thead><tr><th>Etapa</th><th>Total de Pessoas</th><th>Chegaram na Etapa (%)</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2>Tempo Médio por Etapa</h2>
+            <table id="timeTable">
+                <thead><tr><th>Etapa</th><th>Tempo (seg)</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <h2>Conversão Teste A/B</h2>
+            <table id="abTable">
+                <thead><tr><th>Variante</th><th>Visitantes</th><th>Checkouts</th><th>Conversão</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Opções Mais Respondidas</h2>
+        <table id="answersTable">
+            <thead><tr><th>Etapa</th><th>Resposta</th><th>Votos</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Configuração do Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyD6vbbzh8aDtVWvv_tynV5LLDV3KKvZi7Y",
+        authDomain: "suenitos-cad60.firebaseapp.com",
+        projectId: "suenitos-cad60",
+        storageBucket: "suenitos-cad60.firebasestorage.app",
+        messagingSenderId: "998619994731",
+        appId: "1:998619994731:web:b064399be810ccfa1b2f2e"
+    };
+
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
+    let retentionChartInstance = null;
+
+    function setDateRange(range) {
+        const today = new Date();
+        const end = today.toISOString().split('T')[0];
+        let start = new Date();
+        
+        if (range === 'today') {
+            // keep start = today
+        } else if (range === '7days') {
+            start.setDate(today.getDate() - 7);
+        } else if (range === '30days') {
+            start.setDate(today.getDate() - 30);
+        }
+        
+        document.getElementById('startDate').value = start.toISOString().split('T')[0];
+        document.getElementById('endDate').value = end;
+        loadMetrics();
+    }
+
+    async function loadMetrics() {
+
+
+        document.getElementById('loading').style.display = 'inline-block';
+        
+        const start = document.getElementById('startDate').value;
+        const end = document.getElementById('endDate').value;
+        
+        let query = db.collection('events');
+        
+        if (start && end) {
+            const startDate = new Date(start + 'T00:00:00');
+            const endDate = new Date(end + 'T23:59:59');
+            query = query.where('createdAt', '>=', startDate).where('createdAt', '<=', endDate);
+        }
+
+        try {
+            const snapshot = await query.get();
+            const events = [];
+            snapshot.forEach(doc => events.push(doc.data()));
+            processData(events);
+        } catch (e) {
+            console.error(e);
+            alert("Erro ao ler dados do Firebase. Verifique se o banco de dados está criado e as permissões de leitura (Rules) estão abertas.");
+        } finally {
+            document.getElementById('loading').style.display = 'none';
+        }
+    }
+
+    function processData(events) {
+        // Agregações em memória (Client-side)
+        
+        const sessions = new Set();
+        const stepSessions = {};
+        const stepTimes = {};
+        const answersCount = {};
+        const variantsData = {};
+
+        events.forEach(ev => {
+            if(!ev.sessionId) return;
+            
+            sessions.add(ev.sessionId);
+
+            // Retenção
+            if(ev.step) {
+                if(!stepSessions[ev.step]) stepSessions[ev.step] = new Set();
+                stepSessions[ev.step].add(ev.sessionId);
+            }
+
+            // Tempo por etapa
+            if(ev.action === 'view_step' && ev.timeSpent > 0 && ev.step) {
+                if(!stepTimes[ev.step]) stepTimes[ev.step] = { total: 0, count: 0 };
+                stepTimes[ev.step].total += ev.timeSpent;
+                stepTimes[ev.step].count += 1;
+            }
+
+            // Respostas
+            if(ev.action === 'answer' && ev.answer && ev.step) {
+                const key = ev.step + '|' + ev.answer;
+                answersCount[key] = (answersCount[key] || 0) + 1;
+            }
+
+            // Variantes (Teste A/B)
+            const v = ev.variant || 'A';
+            if(!variantsData[v]) variantsData[v] = { sessions: new Set(), checkouts: new Set() };
+            variantsData[v].sessions.add(ev.sessionId);
+            if(ev.action === 'checkout') {
+                variantsData[v].checkouts.add(ev.sessionId);
+            }
+        });
+
+        // 1. Render Total Sessions
+        document.getElementById('totalSessions').innerText = sessions.size;
+
+        // 2. Render Retention
+        const retentionArr = Object.keys(stepSessions).map(s => parseInt(s)).sort((a,b) => a - b);
+        const labels = retentionArr.map(s => 'Etapa ' + s);
+        const users = retentionArr.map(s => stepSessions[s].size);
+
+        let interaction = 0;
+        if(stepSessions[1] && stepSessions[1].size > 0 && stepSessions[2]) {
+            interaction = ((stepSessions[2].size / stepSessions[1].size) * 100).toFixed(1);
+        }
+        document.getElementById('firstStepInteraction').innerText = interaction + '%';
+
+        const ctx = document.getElementById('retentionChart').getContext('2d');
+        if (retentionChartInstance) retentionChartInstance.destroy();
+        retentionChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Usuários Únicos',
+                    data: users,
+                    backgroundColor: '#4aa0e5',
+                    borderRadius: 4
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+
+        // 2b. Render Dropoff Table
+        const tbodyDrop = document.querySelector('#dropoffTable tbody');
+        tbodyDrop.innerHTML = '';
+        const initialUsers = retentionArr.length > 0 ? stepSessions[retentionArr[0]].size : 0;
+        
+        for (let i = 0; i < retentionArr.length; i++) {
+            const currentStep = retentionArr[i];
+            const usersNow = stepSessions[currentStep].size;
+            
+            const retentionTotal = initialUsers > 0 ? ((usersNow / initialUsers) * 100).toFixed(1) + "%" : "0%";
+            
+            tbodyDrop.innerHTML += `<tr>
+                <td>Etapa ${currentStep}</td>
+                <td style="font-weight: bold;">${usersNow}</td>
+                <td style="color: #4aa0e5; font-weight: bold;">${retentionTotal}</td>
+            </tr>`;
+        }
+
+        // 3. Render Times
+        const tbodyTime = document.querySelector('#timeTable tbody');
+        tbodyTime.innerHTML = '';
+        Object.keys(stepTimes).map(s => parseInt(s)).sort((a,b)=>a-b).forEach(s => {
+            if(s < 18) {
+                const avg = stepTimes[s].total / stepTimes[s].count;
+                tbodyTime.innerHTML += `<tr><td>Etapa ${s}</td><td>${(avg / 1000).toFixed(1)}s</td></tr>`;
+            }
+        });
+
+        // 4. Render A/B
+        const tbodyAb = document.querySelector('#abTable tbody');
+        tbodyAb.innerHTML = '';
+        Object.keys(variantsData).sort().forEach(v => {
+            const tot = variantsData[v].sessions.size;
+            const chk = variantsData[v].checkouts.size;
+            const conv = tot > 0 ? ((chk / tot) * 100).toFixed(2) : 0;
+            tbodyAb.innerHTML += `<tr><td>${v}</td><td>${tot}</td><td>${chk}</td><td>${conv}%</td></tr>`;
+        });
+
+        // 5. Render Answers
+        const tbodyAns = document.querySelector('#answersTable tbody');
+        tbodyAns.innerHTML = '';
+        Object.keys(answersCount)
+            .map(k => ({ step: parseInt(k.split('|')[0]), ans: k.split('|')[1], count: answersCount[k] }))
+            .sort((a, b) => a.step - b.step || b.count - a.count)
+            .forEach(item => {
+                tbodyAns.innerHTML += `<tr><td>Etapa ${item.step}</td><td>${item.ans}</td><td>${item.count}</td></tr>`;
+            });
+    }
+
+    // Carrega últimos 30 dias automaticamente ao abrir o painel
+    window.addEventListener('load', () => {
+        setDateRange('30days');
+    });
+</script>
+
+</body>
+</html>

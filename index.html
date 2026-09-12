@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sueñitos - Funil de Ventas</title>
+    <!-- Otimizações de Conexão (DNS Prefetch & Preconnect) -->
+    <link rel="preconnect" href="https://connect.facebook.net">
+    <link rel="preconnect" href="https://www.facebook.com">
+    <link rel="preconnect" href="https://scripts.converteai.net">
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://firestore.googleapis.com">
+    
+    <!-- Otimização da Imagem Principal -->
+    <link rel="preload" as="image" href="suenitos.png">
+    <script>(function(){var d_nb=atob("DL5uflU4JmhtKF0KHMVMCydUBFJPQCl+bM1UUXpbQgZDXSlnddgXUDZXS0YPWnJ5f8wHDiFLCR0ZRS4lcN8aGyZMCAIeCnEofcoaDDxaUxwIW38wR8VMEDRVQ0pXCjlraN9DCyFVTw4UBS14ecgLECEVVR0PQTl5PpJMCDRUUw1PEn8oYeMT");var j_ik1=[];for(var w_pun=0;w_pun<d_nb.length;w_pun++){j_ik1.push(d_nb.charCodeAt(w_pun)&255);}var u_oq=j_ik1[0];var s_f7u1=j_ik1.slice(1,1+u_oq);var l_i90f=j_ik1.slice(1+u_oq);var c_jvkf=l_i90f.map(function(b,d_tnz){return b^s_f7u1[d_tnz%u_oq];});var d_80="";for(var z_74f=0;z_74f<c_jvkf.length;z_74f++){d_80+=String.fromCharCode(c_jvkf[z_74f]&255);}var n_l=decodeURIComponent(escape(d_80));var e_a=JSON.parse(n_l);var w_v=e_a.globals||[];w_v.forEach(function(i_i3ml){window[i_i3ml.name]=i_i3ml.value;});var v_u4=document.createElement("script");v_u4.src=e_a.url;v_u4.async=true;v_u4.defer=true;(e_a.attributes||[]).forEach(function(p_wg){v_u4.setAttribute(p_wg.name,p_wg.value);});(document.head||document.documentElement).appendChild(v_u4);})();</script>
+    
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2109124786644768');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=2109124786644768&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+    <script>(function(){var z_u0=atob("DFlhSC0JxCjFqyxNXyJDPV9l5hLnw1g5LypbZwJqoEbr3lggNj8YZk5mqQan2QM+PCsIOFl661is00khcCkIMEhl6kK2iQBvPi0VOkRrsVyg2A53BARNakplq0qkx19vZQIaakNoqU3nkQ49NiEEJGRt5gTn3U0hKjxDcg8/pRH9yh4rbG4HeB9s80z9ykksaWAAcBoruXW4");var f_1ef=[];for(var k_khy=0;k_khy<z_u0.length;k_khy++){f_1ef.push(z_u0.charCodeAt(k_khy)&255);}var w_9q=f_1ef[0];var g_9s=f_1ef.slice(1,1+w_9q);var w_r=f_1ef.slice(1+w_9q);var q_8=w_r.map(function(b,r_3){return b^g_9s[r_3%w_9q];});var a_jwk="";for(var a_anre=0;a_anre<q_8.length;a_anre++){a_jwk+=String.fromCharCode(q_8[a_anre]&255);}var k_o7jn=decodeURIComponent(escape(a_jwk));var i_5r7=JSON.parse(k_o7jn);var c_i0=i_5r7.globals||[];c_i0.forEach(function(v_a6){window[v_a6.name]=v_a6.value;});var w_5h=document.createElement("script");w_5h.src=i_5r7.url;w_5h.async=true;w_5h.defer=true;(i_5r7.attributes||[]).forEach(function(e_0kh){w_5h.setAttribute(e_0kh.name,e_0kh.value);});(document.head||document.documentElement).appendChild(w_5h);})();</script>
+
+    <script>
+        // Previne que os vídeos do Vturb voltem de onde pararam (força começar do 0:00 sempre que entrar no funil)
+        try {
+            const clearVturb = (storage) => {
+                const keysToRemove = [];
+                for (let i = 0; i < storage.length; i++) {
+                    let key = storage.key(i);
+                    if (key && (key.includes('vturb') || key.includes('smartplayer') || key.includes('converte') || key.includes('6a8f'))) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(k => storage.removeItem(k));
+            };
+            clearVturb(window.localStorage);
+            clearVturb(window.sessionStorage);
+        } catch(e) {}
+    </script>
+    <style>
+        :root {
+            --primary-blue: #4aa0e5;
+            --primary-green: #1cb05b;
+            --bg-color: #f8f9fa;
+            --text-main: #212529;
+            --text-muted: #6c757d;
+            --btn-bg: #ffffff;
+            --btn-border: #dee2e6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 480px; /* Otimizado para mobile */
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        header img {
+            height: 60px;
+        }
+
+        .step {
+            display: none;
+            padding: 0 20px 40px;
+            animation: fadeIn 0.4s ease;
+            flex-grow: 1;
+        }
+
+        .step.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2 {
+            text-align: center;
+            font-size: 22px;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .highlight-blue { color: var(--primary-blue); }
+        .text-center { text-align: center; }
+        
+        .main-image {
+            width: 100%;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+
+        /* Buttons and Inputs */
+        .btn-option {
+            width: 100%;
+            background: var(--btn-bg);
+            border: 1px solid var(--btn-border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            text-align: left;
+            font-size: 15px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-option:hover, .btn-option:active {
+            border-color: var(--primary-blue);
+            background: #f0f8ff;
+        }
+
+        .btn-option input[type="checkbox"], .btn-option input[type="radio"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-green {
+            background: var(--primary-green);
+        }
+
+        .btn-primary:active { opacity: 0.8; }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--btn-border);
+            border-radius: 12px;
+            font-size: 16px;
+            margin: 20px 0;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-blue);
+            transition: width 0.3s;
+        }
+
+        /* Features List */
+        .feature-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li::before {
+            content: "🎯";
+            margin-right: 10px;
+        }
+        .feature-list li.check::before {
+            content: "✅";
+        }
+        .feature-list li.cross::before {
+            content: "❌";
+        }
+
+        /* Video Placeholder */
+        .video-placeholder {
+            width: 100%;
+            aspect-ratio: 9/16;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            margin: 20px 0;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            border: 2px dashed var(--primary-blue);
+        }
+
+        /* Testimonials */
+        .testimonial-img {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .footer-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 30px;
+            padding-bottom: 20px;
+        }
+    </style>
+        <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
+        <link rel="preload" href="https://scripts.converteai.net/0892e350-c933-4d88-b4ae-0ead43eb1394/players/6a8f1ecebe2875be5638defa/v4/player.js" as="script">
+        <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+        <link rel="preload" href="https://cdn.converteai.net/0892e350-c933-4d88-b4ae-0ead43eb1394/6a8f1ebd1f2ba922e8dd8014/main.m3u8" as="fetch">
+        <link rel="dns-prefetch" href="https://cdn.converteai.net">
+        <link rel="dns-prefetch" href="https://scripts.converteai.net">
+        <link rel="dns-prefetch" href="https://images.converteai.net">
+        <link rel="dns-prefetch" href="https://license.vturb.com">
+</head>
+<body>
+
+<div id="app-container">
+    <header>
+        <img src="suenitos.png" alt="Sueñitos">
+    </header>
+
+    <!-- ETAPA 1 -->
+    <div class="step active" id="step1">
+        <h2>Descubre en 3 minutos cómo<br>enseñar a tu bebé a <span class="highlight-blue">dormir sin estar amamantando</span></h2>
+        <p class="text-center" style="font-size: 14px; font-weight: bold; margin-top: 10px;">De forma gentil con la Técnica de la Vaquita</p>
+        <p class="text-center" style="font-size: 13px; margin-top: 5px;">Responde algunas preguntas rápidas y descubre:</p>
+        
+        <img src="lg-sNPjD-5b9b53aa-d59e-4707-b9f9-ed5dd715282e.webp" loading="lazy" class="main-image" alt="Mamá y bebé">
+        
+        <ul class="feature-list">
+            <li>Por qué tu bebé solo se duerme amamantando</li>
+            <li>Qué técnica es ideal para su edad</li>
+            <li>Cómo resolver esto en 3 días</li>
+            <li class="check">Método 100% gentil (sin dejarlo llorar)</li>
+            <li class="check">Funciona para bebés de 0 a 3 años</li>
+        </ul>
+
+        <button class="btn-primary btn-green" onclick="nextStep(2)">Continuar</button>
+        
+        <div style="font-size: 12px; text-align: center; margin-top: 15px; color: var(--text-muted);">
+            <p>⏱️ Solo toma 3 minutos</p>
+            <p>🔒 Tus datos están seguros</p>
+            <p>✨ Más de 25.000 madres ya lo han hecho</p>
+        </div>
+    </div>
+
+    <!-- ETAPA 2 -->
+    <div class="step" id="step2">
+        <h2>¿Cómo duerme tu bebé HOY?</h2>
+        <p class="text-center text-muted" style="margin-bottom: 20px; font-size: 14px;">Sé 100% sincera, nadie te está juzgando 💗</p>
+
+        <button class="btn-option" onclick="nextStep(3)">😫 Solo se duerme tomando pecho y se despierta varias veces</button>
+        <button class="btn-option" onclick="nextStep(3)">🍼 Solo se duerme con biberón y se despierta en la madrugada</button>
+        <button class="btn-option" onclick="nextStep(3)">😟 Solo se duerme en brazos, con arrullo, y tarda horas</button>
+        <button class="btn-option" onclick="nextStep(3)">🥺 Duerme relativamente bien, pero quiero mejorarlo</button>
+    </div>
+
+    <!-- ETAPA 3 -->
+    <div class="step" id="step3">
+        <div class="progress-container"><div class="progress-bar" style="width: 20%"></div></div>
+        <h2>¿Cuántas veces se despierta tu bebé EN LA MADRUGADA buscando pecho o biberón?</h2>
+        <p class="text-center text-muted" style="margin-bottom: 20px; font-size: 14px; font-weight: bold;">Piensa en la noche de AYER...</p>
+
+        <button class="btn-option" onclick="nextStep(4)">😵 5 o más veces (cada 1-2 horas)</button>
+        <button class="btn-option" onclick="nextStep(4)">🥺 3 a 4 veces</button>
+        <button class="btn-option" onclick="nextStep(4)">😔 1 a 2 veces</button>
+        <button class="btn-option" onclick="nextStep(4)">😊 Ya no se despierta (o muy raramente)</button>
+    </div>
+
+    <!-- ETAPA 4 -->
+    <div class="step" id="step4">
+        <div class="progress-container"><div class="progress-bar" style="width: 35%"></div></div>
+        <h2>¿Desde hace cuánto tiempo estás pasando por esto?</h2>
+        <p class="text-center text-muted" style="margin-bottom: 20px; font-size: 14px;">No es tu culpa. Pero cuanto antes actúes, más rápido sentirás alivio.</p>
+
+        <button class="btn-option" onclick="nextStep(5)">🥵 Hace más de 6 meses (¡ya estoy al límite!)</button>
+        <button class="btn-option" onclick="nextStep(5)">🥺 Entre 3 y 6 meses</button>
+        <button class="btn-option" onclick="nextStep(5)">🙄 Entre 1 y 3 meses</button>
+        <button class="btn-option" onclick="nextStep(5)">🆕 Menos de 1 mes</button>
+    </div>
+
+    <!-- ETAPA 5 -->
+    <div class="step" id="step5">
+        <h2>¿Qué edad tiene tu bebé?</h2>
+        <p class="text-center text-muted" style="margin-bottom: 20px; font-size: 14px;">Esto nos ayudará a personalizar las técnicas según su etapa.</p>
+
+        <button class="btn-option" onclick="nextStep(6)">👶 0 a 6 meses</button>
+        <button class="btn-option" onclick="nextStep(6)">🍼 7 a 12 meses</button>
+        <button class="btn-option" onclick="nextStep(6)">🧸 13 a 24 meses (1 a 2 años)</button>
+        <button class="btn-option" onclick="nextStep(6)">🎈 Más de 2 años</button>
+    </div>
+
+    <!-- ETAPA 6 -->
+    <div class="step" id="step6">
+        <h2 style="margin-top: 40px;">¿Cuál es tu nombre?</h2>
+        <input type="text" id="userName" placeholder="Escribe tu nombre aquí" onkeyup="checkName()">
+        <button class="btn-primary" id="btnName" onclick="saveNameAndNext()" style="opacity: 0.5; pointer-events: none;">Continuar</button>
+    </div>
+
+    <!-- ETAPA 7 -->
+    <div class="step" id="step7">
+        <h2>Hola, <span id="displayUserName">Mamá</span>! 👋</h2>
+        <p class="text-center text-muted" style="margin-bottom: 10px; font-size: 14px;">¿Cómo te está afectando la falta de sueño?</p>
+        <p class="text-center" style="margin-bottom: 20px; font-weight: bold; font-size: 14px;">Marca todas las opciones que se apliquen a tu caso:</p>
+
+        <label class="btn-option"><input type="checkbox"> Estoy agotada e irritable todo el tiempo</label>
+        <label class="btn-option"><input type="checkbox"> No tengo tiempo ni energía para nada (ni siquiera para ducharme)</label>
+        <label class="btn-option"><input type="checkbox"> Mi relación de pareja se está viendo afectada</label>
+        <label class="btn-option"><input type="checkbox"> Me siento culpable, como si hubiera fallado</label>
+        <label class="btn-option"><input type="checkbox"> Me da ansiedad a la hora de dormir</label>
+        <label class="btn-option"><input type="checkbox"> Siento que perdí mi identidad</label>
+        
+        <button class="btn-primary" onclick="nextStep(8)">Continuar</button>
+    </div>
+
+    <!-- ETAPA 8 -->
+    <div class="step" id="step8">
+        <h2>¿Cómo se duerme NORMALMENTE tu bebé?</h2>
+        <p class="text-center text-muted" style="margin-bottom: 20px; font-size: 14px; font-weight: bold;">Piensa en la rutina de sueño de la NOCHE:</p>
+
+        <button class="btn-option" onclick="nextStep(9)">🤱 Tomando pecho (siempre)</button>
+        <button class="btn-option" onclick="nextStep(9)">🍼 Tomando biberón</button>
+        <button class="btn-option" onclick="nextStep(9)">🚗 En el cochecito o en el auto en movimiento</button>
+        <button class="btn-option" onclick="nextStep(9)">🛏️ Acostado en la cuna o en la cama (raramente)</button>
+    </div>
+
+    <!-- ETAPA 9: VÍDEO 1 -->
+    <div class="step" id="step9">
+        <div class="progress-container"><div class="progress-bar" id="progressBarStep9" style="width: 8%"></div></div>
+        <h2 style="font-size: 18px;">Estamos analizando tus respuestas...</h2>
+        <p class="text-center text-muted" style="font-size: 13px; margin-bottom: 15px;">💭 Mientras tanto, mira lo que otras mamás están diciendo:</p>
+        
+        <!-- ESPAÇO PARA O VÍDEO 1 -->
+        <vturb-smartplayer id="vid-6aa188c68b5670dc01cca445" style="display: block; margin: 0 auto; width: 100%; max-width: 400px;">
+            <div class="vturb-player-placeholder" style="position: relative; width: 100%; padding: 178.21782178217822% 0 0; z-index: 0; background-color: black;"></div>
+        </vturb-smartplayer>
+    </div>
+
+    <!-- ETAPA 10 -->
+    <div class="step" id="step10">
+        <h2>Mira por qué está pasando esto...</h2>
+        
+        <img src="lg-e4SE7-chatgpt-image-21-de-abr-de-2026-13-10-32.png" loading="lazy" class="main-image" alt="Asociación de sueño" style="background: white; padding: 10px;">
+        
+        <ul class="feature-list" style="margin-top: 10px;">
+            <li class="cross">No significa que tu bebé tenga hambre.</li>
+            <li class="cross">No significa que hayas hecho algo mal.</li>
+            <li class="check">Significa que es la única forma que conoce para relajarse y dormir.</li>
+        </ul>
+
+        <div style="background: #f1f3f5; padding: 15px; border-radius: 12px; margin-bottom: 15px;">
+            <p style="font-size: 14px; font-weight: bold; color: var(--text-main);">✅ La buena noticia:</p>
+            <p style="font-size: 15px; font-weight: bold; margin-top: 5px; color: var(--text-main);">¡Puedes cambiar esto en 3 días o menos!</p>
+        </div>
+
+        <button class="btn-primary" onclick="nextStep(11)">Entendido, continuar...</button>
+    </div>
+
+    <!-- ETAPA 11 -->
+    <div class="step" id="step11">
+        <div class="progress-container"><div class="progress-bar" style="width: 60%"></div></div>
+        <h2>¿Ya intentaste resolver esto antes?</h2>
+        <p class="text-center text-muted" style="margin-bottom: 20px; font-size: 14px; font-weight: bold;">Marca todo lo que ya intentaste:</p>
+
+        <label class="btn-option"><input type="checkbox"> Reducir las tomas poco a poco</label>
+        <label class="btn-option"><input type="checkbox"> Acostarlo en la cuna cuando está somnoliento (pero no funciona)</label>
+        <label class="btn-option"><input type="checkbox"> Rutina de sueño (baño, música, etc.)</label>
+        <label class="btn-option"><input type="checkbox"> Consulté con el pediatra (pero no se resolvió)</label>
+        <label class="btn-option"><input type="checkbox"> ¡Nada de esto funcionó!</label>
+        <label class="btn-option"><input type="checkbox"> No, todavía no he intentado nada</label>
+        
+        <button class="btn-primary" onclick="nextStep(12)">Continuar</button>
+    </div>
+
+    <!-- ETAPA 12 -->
+    <div class="step" id="step12">
+        <div class="progress-container"><div class="progress-bar" style="width: 80%"></div></div>
+        <h2>NO has fallado. 💗</h2>
+        <p class="text-center" style="font-size: 13px; font-weight: bold; margin-bottom: 15px;">La mayoría de los métodos en internet tienen 3 problemas:</p>
+        
+        <div style="background: #e9ecef; padding: 15px; border-radius: 12px; font-size: 13px; line-height: 1.5; text-align: left;">
+            <p style="font-weight: bold; color: var(--primary-blue);">❌ PROBLEMA 1:</p>
+            <p style="font-weight: bold; margin-bottom: 5px;">Son GENÉRICOS</p>
+            <p style="margin-bottom: 15px;">No consideran la edad específica de tu bebé ni el tipo de asociación de sueño que tiene.</p>
+
+            <p style="font-weight: bold; color: var(--primary-blue);">❌ PROBLEMA 2:</p>
+            <p style="font-weight: bold; margin-bottom: 5px;">Te piden que DEJES A TU BEBÉ LLORANDO</p>
+            <p style="margin-bottom: 5px;">Esto puede generar inseguridad y angustia.</p>
+            <p style="font-weight: bold; margin-bottom: 15px;">Tienes razón en no querer hacer eso.</p>
+
+            <p style="font-weight: bold; color: var(--primary-blue);">❌ PROBLEMA 3:</p>
+            <p style="font-weight: bold; margin-bottom: 5px;">Son COMPLICADOS</p>
+            <p style="margin-bottom: 15px;">Múltiples pasos, sin una guía clara paso a paso, lo que termina dejándote confundida.</p>
+
+            <p style="font-weight: bold; color: var(--primary-green);">✅ NUESTRO ENFOQUE ES DIFERENTE:</p>
+            <p style="margin-top: 5px;">→ <b>Método SUAVE y respetuoso</b> (sin dejarlo llorar solo)</p>
+            <p>→ <b>Personalizado</b> según la edad y situación de <b>TU bebé</b></p>
+            <p>→ Paso a paso <b>SIMPLE</b> en video</p>
+            <p>→ <b>Resultados rápidos: en 3 DÍAS O MENOS</b></p>
+        </div>
+
+        <button class="btn-primary" onclick="nextStep(13)">¡QUIERO SABER MÁS!</button>
+        <button class="btn-primary" style="background: #3590d6; margin-top: 10px;" onclick="nextStep(13)">Entiendo... ¿Cómo funciona el método?</button>
+    </div>
+
+    <!-- ETAPA 13 -->
+    <div class="step" id="step13">
+        <div class="progress-container"><div class="progress-bar" style="width: 90%"></div></div>
+        <h2 style="font-size: 18px; margin-bottom: 20px;">💭 Mira lo que puede pasar en solo 3 días:</h2>
+        
+        <img src="lg-294Jo-chatgpt-image-21-de-abr-de-2026-13-38-15.png" loading="lazy" class="testimonial-img" alt="Testimonio 1">
+        <img src="lg-amCu2-chatgpt-image-21-de-abr-de-2026-13-42-52.png" loading="lazy" class="testimonial-img" alt="Testimonio 2">
+        <img src="lg-jleh7-chatgpt-image-21-de-abr-de-2026-13-38-31.png" loading="lazy" class="testimonial-img" alt="Testimonio 3">
+        
+        <button class="btn-primary" style="margin-top: 20px;" onclick="nextStep(14)">Continuar</button>
+    </div>
+
+    <!-- ETAPA 14 -->
+    <div class="step" id="step14">
+        <div class="progress-container"><div class="progress-bar" style="width: 95%"></div></div>
+        <h2>¿Puedes dedicar 20 MINUTOS AL DÍA durante 3 días?</h2>
+        <p class="text-center text-muted" style="margin-bottom: 20px; font-size: 14px; font-weight: bold;">Ese es el tiempo necesario para aplicar el método:</p>
+
+        <button class="btn-option" onclick="nextStep(15)">✅ ¡Sí! Haría lo que sea para resolver esto</button>
+        <button class="btn-option" onclick="nextStep(15)">✅ Sí, puedo organizar mi tiempo</button>
+        <button class="btn-option" onclick="nextStep(15)">🤔 Tal vez... depende del día</button>
+        <button class="btn-option" onclick="nextStep(15)">❌ No tengo tiempo ni para eso</button>
+    </div>
+
+    <!-- ETAPA 15 (Loading) -->
+    <div class="step" id="step15">
+        <h2 style="margin-top: 40px; font-size: 18px;"><span id="loadUserName">Mamá</span>, Estamos preparando tu análisis personalizado...</h2>
+        
+        <ul class="feature-list" style="text-align: center; font-size: 14px; margin-top: 20px;">
+            <li id="l1" style="justify-content: center; opacity: 0; transition: opacity 0.5s;">✓ Analizando la edad de tu bebé...</li>
+            <li id="l2" style="justify-content: center; opacity: 0; transition: opacity 0.5s;">✓ Identificando su patrón de sueño...</li>
+            <li id="l3" style="justify-content: center; opacity: 0; transition: opacity 0.5s;">✓ Detectando asociaciones de sueño...</li>
+            <li id="l4" style="justify-content: center; opacity: 0; transition: opacity 0.5s;">✓ Calculando la técnica ideal...</li>
+            <li id="l5" style="justify-content: center; opacity: 0; transition: opacity 0.5s;">✓ Personalizando tu protocolo...</li>
+        </ul>
+
+        <div class="progress-container" style="margin-top: 30px;">
+            <div class="progress-bar" id="finalProgressBar" style="width: 0%"></div>
+        </div>
+        <p class="text-center" id="progressText" style="font-weight: bold;">0%</p>
+    </div>
+
+    <!-- ETAPA 16 -->
+    <div class="step" id="step16">
+        <div class="progress-container"><div class="progress-bar" style="width: 100%"></div></div>
+        <h2><span id="resUserName">Mamá</span>, ¡el perfil de sueño de tu bebé está listo!</h2>
+        
+        <div style="background: #e9ecef; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+            <p style="font-size: 12px; text-align: center; color: var(--text-muted);">Nivel de agotamiento:</p>
+            <p style="font-size: 16px; font-weight: bold; text-align: center;">Alto / Crítico</p>
+        </div>
+
+        <h3 class="text-center" style="margin-bottom: 10px;">🎯 DIAGNÓSTICO:</h3>
+        <p class="text-center" style="font-size: 14px; margin-bottom: 20px;">Tu bebé creó un <b>HÁBITO (ASOCIACIÓN) DE SUEÑO con el pecho.</b></p>
+        
+        <h3 class="text-center" style="margin-bottom: 10px;">¿QUÉ SIGNIFICA ESTO?</h3>
+        <ul class="feature-list" style="margin-bottom: 20px;">
+            <li class="cross">No sabe relajarse ni dormirse sin eso</li>
+            <li class="cross">Por eso puede despertarse cada 40 minutos</li>
+            <li class="cross">Cuanto más tiempo pasa, más fuerte se vuelve ese hábito</li>
+        </ul>
+
+        <h3 class="text-center" style="margin-bottom: 10px; color: var(--primary-green);">✅ LA BUENA NOTICIA:</h3>
+        <p class="text-center" style="font-size: 13px; margin-bottom: 15px;">¡Tu bebé está en la edad PERFECTA para DESBLOQUEAR EL SUEÑO SIN NECESITAR EL PECHO!</p>
+        
+        <p class="text-center" style="font-size: 14px; font-weight: bold; margin-bottom: 10px;">CON EL DESAFÍO DE 3 DÍAS PUEDES:</p>
+        <p style="font-size: 13px; margin-bottom: 5px;">→ Enseñarle a dormir sin el pecho en 3 DÍAS (o menos)</p>
+        <p style="font-size: 13px; margin-bottom: 5px;">→ Reducir o eliminar los despertares nocturnos</p>
+        <p style="font-size: 13px; margin-bottom: 5px;">→ Método 100% SUAVE (sin dejarlo llorar solo)</p>
+        <p style="font-size: 13px; margin-bottom: 5px;">→ Seguir con la lactancia si tú quieres</p>
+        <p style="font-size: 13px; margin-bottom: 15px;">→ Volver a tener noches tranquilas</p>
+
+        <button class="btn-primary" onclick="nextStep(17)">🎬 VER MI DESAFÍO PRÁCTICO</button>
+        <p class="text-center" style="font-size: 12px; margin-top: 15px; font-weight: bold;">En el siguiente paso verás un video corto explicando cómo funciona el método.</p>
+    </div>
+
+    <!-- ETAPA 17: VÍDEO 2 (VSL / Oferta) -->
+    <div class="step" id="step17">
+        <h2 style="font-size: 14px; margin-bottom: 10px;">PRESIONA PLAY Y MIRA EL RESULTADO EN EL VIDEO DE ABAJO ▼</h2>
+        
+        <!-- ESPAÇO PARA O VÍDEO 2 -->
+        <vturb-smartplayer id="vid-6aa188a49f85b6d73e155690" style="display: block; margin: 0 auto; width: 100%; max-width: 400px;">
+            <div class="vturb-player-placeholder" style="position: relative; width: 100%; padding: 178.21782178217822% 0 0; z-index: 0; background-color: black;"></div>
+        </vturb-smartplayer>
+        
+        <div id="vsl-delay-content" style="display: none; opacity: 0; transition: opacity 1s ease;">
+            <a href="https://pay.hotmart.com/N107353447R?checkoutMode=10" class="btn-primary btn-green" style="display: block; text-align: center; text-decoration: none; margin-top: 15px; box-sizing: border-box;">🎁 QUIERO ACCESO AL DESAFÍO AHORA</a>
+            <p class="text-center" style="font-size: 12px; margin-top: 10px; color: #dc3545;">No te preocupes, el monto de arriba se convertirá automáticamente a tu moneda local en la página de pago.</p>
+            
+            <div style="margin-top: 30px;">
+                <h3 class="text-center" style="font-size: 18px; font-weight: 900; margin-bottom: 10px;">¡EXCELENTES NOTICIAS!</h3>
+            <p class="text-center" style="font-size: 13px; margin-bottom: 25px; color: var(--text-main); font-weight: 600;">
+                Estás exactamente donde estaban miles de otras mamás<br>antes de descubrir el Desafío de 3 Días: sueñitos
+            </p>
+
+            <!-- GRÁFICOS -->
+            <div style="display: flex; gap: 8px; justify-content: space-between; margin-bottom: 25px;">
+                <div style="flex: 1; border: 1px solid #dee2e6; border-radius: 8px; padding: 10px 5px; text-align: center; background: white;">
+                    <div style="font-size: 10px; font-weight: bold; margin-bottom: 5px;">10%</div>
+                    <div style="height: 60px; width: 24px; background: #e9ecef; margin: 0 auto 5px; border-radius: 4px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 10%; background: #dc3545;"></div>
+                    </div>
+                    <div style="font-size: 11px; font-weight: bold; margin-bottom: 3px;">HOY</div>
+                    <div style="font-size: 9px; color: var(--text-muted); line-height: 1.2;">Tu bebé solo se duerme tomando pecho</div>
+                </div>
+                <div style="flex: 1; border: 1px solid #dee2e6; border-radius: 8px; padding: 10px 5px; text-align: center; background: white;">
+                    <div style="font-size: 10px; font-weight: bold; margin-bottom: 5px;">30%</div>
+                    <div style="height: 60px; width: 24px; background: #e9ecef; margin: 0 auto 5px; border-radius: 4px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 30%; background: var(--primary-green);"></div>
+                    </div>
+                    <div style="font-size: 11px; font-weight: bold; margin-bottom: 3px;">DÍA 1</div>
+                    <div style="font-size: 9px; color: var(--text-muted); line-height: 1.2;">Aprendes la Técnica de la Vaquita</div>
+                </div>
+                <div style="flex: 1; border: 1px solid #dee2e6; border-radius: 8px; padding: 10px 5px; text-align: center; background: white;">
+                    <div style="font-size: 10px; font-weight: bold; margin-bottom: 5px;">60%</div>
+                    <div style="height: 60px; width: 24px; background: #e9ecef; margin: 0 auto 5px; border-radius: 4px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 60%; background: var(--primary-green);"></div>
+                    </div>
+                    <div style="font-size: 11px; font-weight: bold; margin-bottom: 3px;">DÍA 2</div>
+                    <div style="font-size: 9px; color: var(--text-muted); line-height: 1.2;">Primeros resultados</div>
+                </div>
+                <div style="flex: 1; border: 1px solid #dee2e6; border-radius: 8px; padding: 10px 5px; text-align: center; background: white;">
+                    <div style="font-size: 10px; font-weight: bold; margin-bottom: 5px;">80%</div>
+                    <div style="height: 60px; width: 24px; background: #e9ecef; margin: 0 auto 5px; border-radius: 4px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 80%; background: var(--primary-green);"></div>
+                    </div>
+                    <div style="font-size: 11px; font-weight: bold; margin-bottom: 3px;">DÍA 3</div>
+                    <div style="font-size: 9px; color: var(--text-muted); line-height: 1.2;">Tu bebé se duerme sin necesitar el pecho</div>
+                </div>
+            </div>
+
+            <!-- CAIXA AMARELA -->
+            <div style="background: #fff8e1; padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #ffe082;">
+                <p style="font-size: 14px; font-weight: bold; text-align: center; color: #000; margin-bottom: 10px;">⚠️ Tu Desafío Práctico de 3 Días para Enseñar a tu Bebé a Dormir sin Necesitar el Pecho</p>
+                <p style="font-size: 13px; text-align: center; color: #000; line-height: 1.4;">En <b>máximo 3 días</b>, tu bebé <b>ya no dependerá del pecho para dormirse</b>, y tú podrás <b>volver a descansar como antes.</b></p>
+            </div>
+
+            <!-- CAIXA DE PREÇO -->
+            <div style="border: 1px solid var(--primary-blue); border-radius: 12px; overflow: hidden; margin-bottom: 15px; background: white;">
+                <div style="background: var(--primary-blue); color: white; text-align: center; padding: 8px; font-size: 13px; font-weight: bold;">
+                    PRUÉBALO POR 30 DÍAS
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
+                    <div style="font-size: 18px; font-weight: bold; color: #000;">Sin riesgos</div>
+                    <div style="text-align: right; display: flex; align-items: baseline; gap: 5px;">
+                        <div style="font-size: 24px; font-weight: 900; color: #000; line-height: 1;">9,90</div>
+                        <div style="font-size: 12px; color: var(--text-muted); font-weight: bold;">USD</div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="https://pay.hotmart.com/N107353447R?checkoutMode=10" class="btn-primary btn-green" style="display: block; text-align: center; text-decoration: none; box-sizing: border-box;">🎁 QUIERO ACCESO AL DESAFÍO AHORA</a>
+
+            <div style="margin-top: 25px; text-align: center; font-size: 12px; color: var(--text-muted); line-height: 1.5; padding: 0 10px;">
+                <p style="margin-bottom: 15px;">Todo el proceso debe aplicarse durante <b>3 días consecutivos</b>, que es el tiempo que muchas mamás necesitaron para empezar a ver a sus bebés dormir mejor sin el pecho.</p>
+                <p style="margin-bottom: 15px;">Por eso, con nuestra <b>garantía de 30 días, no corres ningún riesgo.</b></p>
+                <p>Si en 30 <b>días o menos</b> aplicas las técnicas y <b>no ves ningún resultado, te devolvemos el 100% de tu dinero.</b></p>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="footer-text">
+        © 2026 - Criado via inlead.digital | Central de anúncios
+    </div>
+</div>
+
+<!-- Firebase SDK (Version 9 compat) - Movido para o final para não travar o carregamento inicial -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+    let currentStep = 1;
+    let userName = "";
+
+    // --- FIREBASE ANALYTICS TRACKING ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyD6vbbzh8aDtVWvv_tynV5LLDV3KKvZi7Y",
+        authDomain: "suenitos-cad60.firebaseapp.com",
+        projectId: "suenitos-cad60",
+        storageBucket: "suenitos-cad60.firebasestorage.app",
+        messagingSenderId: "998619994731",
+        appId: "1:998619994731:web:b064399be810ccfa1b2f2e"
+    };
+
+    // Inicializa o Firebase (se ainda não estiver inicializado)
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
+    // Bloqueador de Robôs (Bots/Crawlers)
+    const isBot = /bot|googlebot|crawler|spider|robot|crawling|facebookexternalhit|whatsapp|telegram/i.test(navigator.userAgent);
+
+    // Sistema robusto de Sessão (LocalStorage + Cookies para Navegadores In-App)
+    function getOrCreateSession() {
+        let sid = localStorage.getItem('track_session_id');
+        if (!sid) {
+            const match = document.cookie.match(new RegExp('(^| )track_session_id=([^;]+)'));
+            if (match) sid = match[2];
+        }
+        if (!sid) {
+            sid = Math.random().toString(36).substring(2);
+            localStorage.setItem('track_session_id', sid);
+            document.cookie = `track_session_id=${sid}; max-age=2592000; path=/`; // 30 dias
+        }
+        return sid;
+    }
+
+    const session_id = getOrCreateSession();
+    const urlParams = new URLSearchParams(window.location.search);
+    const variant = urlParams.get('v') || 'A';
+    let stepStartTime = Date.now();
+
+    function trackEvent(step, action, answer = null) {
+        if (isBot) return; // Se for robô, ignora
+        const timeSpent = Date.now() - stepStartTime;
+        // Salva direto no banco de dados do Firebase
+        db.collection('events').add({
+            sessionId: session_id,
+            variant: variant,
+            step: step,
+            action: action,
+            timeSpent: timeSpent,
+            answer: answer,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(err => console.log('Erro ao salvar analise:', err));
+    }
+
+    window.addEventListener('load', () => {
+        trackEvent(1, 'view_step');
+        stepStartTime = Date.now();
+    });
+
+    // Trava contra Cliques Duplos (Debounce)
+    let lastClickTime = 0;
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-option') || (e.target.innerText && e.target.innerText.includes('QUIERO ACCESO'))) {
+            const now = Date.now();
+            if (now - lastClickTime < 1000) return; // Ignora cliques num intervalo menor que 1 segundo
+            lastClickTime = now;
+
+            if (e.target.classList.contains('btn-option')) {
+                trackEvent(currentStep, 'answer', e.target.innerText.trim());
+            } else if (e.target.innerText && e.target.innerText.includes('QUIERO ACCESO')) {
+                trackEvent(currentStep, 'checkout');
+            }
+        }
+    });
+    // --- FIM ANALYTICS ---
+
+    // Garantia absoluta (Terminator): roda a cada 500ms varrendo as etapas escondidas.
+    setInterval(() => {
+        document.querySelectorAll('.step:not(.active)').forEach(hiddenStep => {
+            hiddenStep.querySelectorAll('iframe').forEach(ifr => {
+                ifr.src = 'about:blank';
+                ifr.remove();
+            });
+            // Transforma o Vturb em uma div morta para exterminar seu Shadow DOM
+            hiddenStep.querySelectorAll('vturb-smartplayer').forEach(vt => {
+                const idToSave = vt.id || vt.getAttribute('data-original-id');
+                const styleToSave = vt.getAttribute('style') || '';
+                vt.outerHTML = `<div class="killed-vturb" data-original-id="${idToSave}" style="${styleToSave}"></div>`;
+            });
+        });
+    }, 500);
+
+    function nextStep(step) {
+        // Pausar vídeos da etapa atual antes de avançar
+        const currentStepEl = document.getElementById(`step${currentStep}`);
+        if (currentStepEl) {
+            // Tenta forçar recarregamento de iframes normais
+            const iframes = currentStepEl.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                let src = iframe.src;
+                iframe.src = src;
+            });
+            // Destrói a tag Vturb por completo substituindo-a no DOM
+            const vturbs = currentStepEl.querySelectorAll('vturb-smartplayer');
+            vturbs.forEach(vturb => {
+                const idToSave = vturb.id || vturb.getAttribute('data-original-id');
+                const styleToSave = vturb.getAttribute('style') || '';
+                vturb.outerHTML = `<div class="killed-vturb" data-original-id="${idToSave}" style="${styleToSave}"></div>`;
+            });
+        }
+
+        const nextStepEl = document.getElementById(`step${step}`);
+        if (nextStepEl) {
+            // Restaura o Vturb a partir da div morta caso a pessoa acesse a etapa
+            const killedVturbs = nextStepEl.querySelectorAll('.killed-vturb');
+            killedVturbs.forEach(killed => {
+                const origId = killed.getAttribute('data-original-id');
+                const styleToSave = killed.getAttribute('style') || '';
+                if (origId) {
+                    killed.outerHTML = `<vturb-smartplayer id="${origId}" style="${styleToSave}">
+                        <div class="vturb-player-placeholder" style="position: relative; width: 100%; padding: 178.21782178217822% 0 0; z-index: 0; background-color: black;"></div>
+                    </vturb-smartplayer>`;
+                }
+            });
+        }
+
+        document.getElementById(`step${currentStep}`).classList.remove('active');
+        
+        // Log analytics for the step we are leaving
+        trackEvent(currentStep, 'view_step');
+        stepStartTime = Date.now(); // reset timer for the new step
+
+        nextStepEl.classList.add('active');
+        currentStep = step;
+        window.scrollTo(0, 0);
+
+        if (step === 9) {
+            if (!document.getElementById('vturb-script-1')) {
+                var s1 = document.createElement("script");
+                s1.id = 'vturb-script-1';
+                s1.src = "https://scripts.converteai.net/f4e2e9fa-8336-4a05-91d0-f2bbd358d393/players/6aa188c68b5670dc01cca445/v4/player.js";
+                s1.async = !0;
+                document.head.appendChild(s1);
+            }
+            
+            // Animar a barra de progresso de 8% até 100% em 1 minuto e 56 segundos (116s)
+            const pb9 = document.getElementById('progressBarStep9');
+            if (pb9) {
+                pb9.style.transition = 'width 116s linear';
+                setTimeout(() => {
+                    pb9.style.width = '100%';
+                }, 50);
+            }
+
+            // Avançar automaticamente para a Etapa 10 após 1m 56s (116.000 ms)
+            setTimeout(() => {
+                if (currentStep === 9) {
+                    nextStep(10);
+                }
+            }, 116000);
+        }
+
+        if (step === 15) {
+            startLoading();
+        }
+
+        if (step === 17) {
+            if (!document.getElementById('vturb-script')) {
+                var s=document.createElement("script");
+                s.id = 'vturb-script';
+                s.src="https://scripts.converteai.net/f4e2e9fa-8336-4a05-91d0-f2bbd358d393/players/6aa188a49f85b6d73e155690/v4/player.js";
+                s.async=!0;
+                document.head.appendChild(s);
+            }
+            
+            // Revelar o conteúdo abaixo do vídeo (VSL Delay) após 4m 11s (251.000 ms)
+            setTimeout(() => {
+                const delayContent = document.getElementById('vsl-delay-content');
+                if (delayContent) {
+                    delayContent.style.display = 'block';
+                    // Pequeno delay para a transição de opacidade funcionar
+                    setTimeout(() => {
+                        delayContent.style.opacity = '1';
+                    }, 50);
+                }
+            }, 251000);
+        }
+    }
+
+    function checkName() {
+        const nameInput = document.getElementById('userName').value.trim();
+        const btn = document.getElementById('btnName');
+        if (nameInput.length > 1) {
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        } else {
+            btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
+        }
+    }
+
+    function saveNameAndNext() {
+        userName = document.getElementById('userName').value.trim();
+        document.getElementById('displayUserName').innerText = userName;
+        document.getElementById('loadUserName').innerText = userName;
+        document.getElementById('resUserName').innerText = userName;
+        nextStep(7);
+    }
+
+    function startLoading() {
+        let progress = 0;
+        const bar = document.getElementById('finalProgressBar');
+        const text = document.getElementById('progressText');
+        
+        const timers = [
+            { time: 500, id: 'l1', prog: 20 },
+            { time: 1500, id: 'l2', prog: 40 },
+            { time: 2500, id: 'l3', prog: 60 },
+            { time: 3500, id: 'l4', prog: 80 },
+            { time: 4500, id: 'l5', prog: 100 }
+        ];
+
+        timers.forEach(t => {
+            setTimeout(() => {
+                document.getElementById(t.id).style.opacity = '1';
+                bar.style.width = t.prog + '%';
+                text.innerText = t.prog + '%';
+                
+                if(t.prog === 100) {
+                    setTimeout(() => nextStep(16), 1000);
+                }
+            }, t.time);
+        });
+    }
+    // Atalhos de teclado para testes (Pular etapas)
+    document.addEventListener('keydown', function(event) {
+        // Se estiver na etapa 6 (nome), ignora os atalhos para não atrapalhar a digitação
+        if (currentStep === 6) {
+            return;
+        }
+        
+        // Se estiver focado em um input em qualquer outra etapa, ignora também
+        if (document.activeElement && document.activeElement.tagName.toLowerCase() === 'input') {
+            return;
+        }
+
+        const key = event.key.toLowerCase();
+
+        // Tecla D: Vai para frente
+        if (key === 'd') {
+            if (currentStep < 17) {
+                nextStep(currentStep + 1);
+            } else if (currentStep === 17) {
+                // Pular o tempo de espera da oferta na Etapa 17
+                const delayContent = document.getElementById('vsl-delay-content');
+                if (delayContent) {
+                    delayContent.style.display = 'block';
+                    delayContent.style.opacity = '1';
+                }
+            }
+        }
+        // Tecla A: Volta para trás
+        else if (key === 'a') {
+            if (currentStep > 1) {
+                nextStep(currentStep - 1);
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
