@@ -61,12 +61,21 @@
         <canvas id="retentionChart" height="80"></canvas>
     </div>
 
-    <div class="card" style="margin-bottom: 20px;">
-        <h2>Acompanhamento do Funil</h2>
-        <table id="dropoffTable">
-            <thead><tr><th>Etapa</th><th>Total de Pessoas</th><th>Chegaram na Etapa (%)</th></tr></thead>
-            <tbody></tbody>
-        </table>
+    <div class="grid">
+        <div class="card">
+            <h2>Acompanhamento - Página A</h2>
+            <table id="dropoffTableA">
+                <thead><tr><th>Etapa</th><th>Pessoas</th><th>Chegaram (%)</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="card">
+            <h2>Acompanhamento - Página B</h2>
+            <table id="dropoffTableB">
+                <thead><tr><th>Etapa</th><th>Pessoas</th><th>Chegaram (%)</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
     <div class="grid">
@@ -165,7 +174,9 @@
         // Agregações em memória (Client-side)
         
         const sessions = new Set();
-        const stepSessions = {};
+        const stepSessions = {}; // For global chart
+        const stepSessionsA = {}; // For Variant A
+        const stepSessionsB = {}; // For Variant B
         const stepTimes = {};
         const answersCount = {};
         const variantsData = {};
@@ -175,10 +186,20 @@
             
             sessions.add(ev.sessionId);
 
+            const v = ev.variant || 'A';
+
             // Retenção
             if(ev.step) {
                 if(!stepSessions[ev.step]) stepSessions[ev.step] = new Set();
                 stepSessions[ev.step].add(ev.sessionId);
+
+                if (v === 'A') {
+                    if(!stepSessionsA[ev.step]) stepSessionsA[ev.step] = new Set();
+                    stepSessionsA[ev.step].add(ev.sessionId);
+                } else if (v === 'B') {
+                    if(!stepSessionsB[ev.step]) stepSessionsB[ev.step] = new Set();
+                    stepSessionsB[ev.step].add(ev.sessionId);
+                }
             }
 
             // Tempo por etapa
@@ -233,23 +254,37 @@
             options: { responsive: true, scales: { y: { beginAtZero: true } } }
         });
 
-        // 2b. Render Dropoff Table
-        const tbodyDrop = document.querySelector('#dropoffTable tbody');
-        tbodyDrop.innerHTML = '';
-        const initialUsers = retentionArr.length > 0 ? stepSessions[retentionArr[0]].size : 0;
+        // 2b. Render Dropoff Table A
+        const tbodyDropA = document.querySelector('#dropoffTableA tbody');
+        tbodyDropA.innerHTML = '';
+        const initialUsersA = stepSessionsA[1] ? stepSessionsA[1].size : 0;
         
-        for (let i = 0; i < retentionArr.length; i++) {
-            const currentStep = retentionArr[i];
-            const usersNow = stepSessions[currentStep].size;
-            
-            const retentionTotal = initialUsers > 0 ? ((usersNow / initialUsers) * 100).toFixed(1) + "%" : "0%";
-            
-            tbodyDrop.innerHTML += `<tr>
+        retentionArr.forEach(currentStep => {
+            if (!stepSessionsA[currentStep]) return;
+            const usersNow = stepSessionsA[currentStep].size;
+            const retentionTotal = initialUsersA > 0 ? ((usersNow / initialUsersA) * 100).toFixed(1) + "%" : "0%";
+            tbodyDropA.innerHTML += `<tr>
                 <td>Etapa ${currentStep}</td>
                 <td style="font-weight: bold;">${usersNow}</td>
                 <td style="color: #4aa0e5; font-weight: bold;">${retentionTotal}</td>
             </tr>`;
-        }
+        });
+
+        // 2c. Render Dropoff Table B
+        const tbodyDropB = document.querySelector('#dropoffTableB tbody');
+        tbodyDropB.innerHTML = '';
+        const initialUsersB = stepSessionsB[1] ? stepSessionsB[1].size : 0;
+        
+        retentionArr.forEach(currentStep => {
+            if (!stepSessionsB[currentStep]) return;
+            const usersNow = stepSessionsB[currentStep].size;
+            const retentionTotal = initialUsersB > 0 ? ((usersNow / initialUsersB) * 100).toFixed(1) + "%" : "0%";
+            tbodyDropB.innerHTML += `<tr>
+                <td>Etapa ${currentStep}</td>
+                <td style="font-weight: bold;">${usersNow}</td>
+                <td style="color: #4aa0e5; font-weight: bold;">${retentionTotal}</td>
+            </tr>`;
+        });
 
         // 3. Render Times
         const tbodyTime = document.querySelector('#timeTable tbody');
