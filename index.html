@@ -687,7 +687,7 @@
     const db = firebase.firestore();
 
     // Bloqueador de Robôs (Bots/Crawlers)
-    const isBot = /bot|googlebot|crawler|spider|robot|crawling|facebookexternalhit|whatsapp|telegram/i.test(navigator.userAgent);
+    const isBot = /bot|googlebot|crawler|spider|robot|crawling|facebookexternalhit/i.test(navigator.userAgent);
 
     // Sistema robusto de Sessão (LocalStorage + Cookies para Navegadores In-App)
     function getOrCreateSession() {
