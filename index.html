@@ -210,6 +210,15 @@
             background: var(--primary-green);
         }
 
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(28, 176, 91, 0.8); }
+            70% { transform: scale(1.03); box-shadow: 0 0 0 15px rgba(28, 176, 91, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(28, 176, 91, 0); }
+        }
+        .btn-pulse {
+            animation: pulse 1.5s infinite;
+        }
+
         .btn-primary:active { opacity: 0.8; }
 
         input[type="text"] {
@@ -312,27 +321,26 @@
     </header>
 
     <!-- ETAPA 1 -->
-    <div class="step active" id="step1">
-        <h2>Descubre en 3 minutos cómo<br>enseñar a tu bebé a <span class="highlight-blue">dormir sin estar amamantando</span></h2>
-        <p class="text-center" style="font-size: 14px; font-weight: bold; margin-top: 10px;">De forma gentil con la Técnica de la Vaquita</p>
-        <p class="text-center" style="font-size: 13px; margin-top: 5px;">Responde algunas preguntas rápidas y descubre:</p>
+    <div class="step active" id="step1" style="padding-top: 5px;">
+        <h2 style="font-size: 20px; line-height: 1.2; margin-bottom: 0;">Descubre en 3 minutos cómo<br>enseñar a tu bebé a <span class="highlight-blue">dormir sin estar amamantando</span></h2>
+        <p class="text-center" style="font-size: 13px; font-weight: bold; margin-top: 5px;">De forma gentil con la Técnica de la Vaquita</p>
         
-        <img src="lg-sNPjD-5b9b53aa-d59e-4707-b9f9-ed5dd715282e.webp" loading="lazy" class="main-image" alt="Mamá y bebé">
+        <img src="lg-sNPjD-5b9b53aa-d59e-4707-b9f9-ed5dd715282e.webp" loading="lazy" class="main-image" style="max-width: 250px; display: block; margin: 8px auto; height: auto;" alt="Mamá y bebé">
         
-        <ul class="feature-list">
-            <li>Por qué tu bebé solo se duerme amamantando</li>
-            <li>Qué técnica es ideal para su edad</li>
-            <li>Cómo resolver esto en 3 días</li>
-            <li class="check">Método 100% gentil (sin dejarlo llorar)</li>
-            <li class="check">Funciona para bebés de 0 a 3 años</li>
+        <ul class="feature-list" style="margin: 10px 0;">
+            <li style="margin-bottom: 6px; font-size: 13.5px; line-height: 1.2;">Qué técnica es ideal para su edad</li>
+            <li style="margin-bottom: 6px; font-size: 13.5px; line-height: 1.2;">Cómo resolver esto en 3 días</li>
+            <li class="check" style="margin-bottom: 6px; font-size: 13.5px; line-height: 1.2;">Método 100% gentil (sin dejarlo llorar)</li>
+            <li class="check" style="margin-bottom: 6px; font-size: 13.5px; line-height: 1.2;">Funciona para bebés de 0 a 3 años</li>
+            <li class="check" style="margin-bottom: 0px; font-size: 13.5px; line-height: 1.2;">Recibir un protocolo personalizado basado en los mismos trucos que las famosas usan</li>
         </ul>
 
-        <button class="btn-primary btn-green" onclick="nextStep(2)">Continuar</button>
+        <button class="btn-primary btn-green btn-pulse" style="margin-top: 5px; padding: 14px;" onclick="nextStep(2)">🎁 Comenzar ahora</button>
         
-        <div style="font-size: 12px; text-align: center; margin-top: 15px; color: var(--text-muted);">
-            <p>⏱️ Solo toma 3 minutos</p>
-            <p>🔒 Tus datos están seguros</p>
-            <p>✨ Más de 25.000 madres ya lo han hecho</p>
+        <div style="font-size: 11px; text-align: center; margin-top: 10px; color: var(--text-muted); display: flex; justify-content: space-around;">
+            <span>⏱️ 3 min</span>
+            <span>🔒 Seguro</span>
+            <span>✨ +25k madres</span>
         </div>
     </div>
 

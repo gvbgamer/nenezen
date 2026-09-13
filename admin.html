@@ -216,7 +216,6 @@
             }
 
             // Variantes (Teste A/B)
-            const v = ev.variant || 'A';
             if(!variantsData[v]) variantsData[v] = { sessions: new Set(), checkouts: new Set() };
             variantsData[v].sessions.add(ev.sessionId);
             if(ev.action === 'checkout') {
