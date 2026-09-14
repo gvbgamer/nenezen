@@ -39,8 +39,8 @@
         <button onclick="setDateRange('7days')" style="background: #6c757d;">Últimos 7 Dias</button>
         <button onclick="setDateRange('30days')" style="background: #6c757d;">Últimos 30 Dias</button>
         <span style="margin: 0 10px; color: #ccc;">|</span>
-        <label>De: <input type="date" id="startDate"></label>
-        <label>Até: <input type="date" id="endDate"></label>
+        <label>De: <input type="datetime-local" id="startDate"></label>
+        <label>Até: <input type="datetime-local" id="endDate"></label>
         <button onclick="loadMetrics()" style="background: #28a745;">Buscar</button>
         <span id="loading">Carregando dados do Firebase...</span>
     </div>
@@ -123,27 +123,29 @@
 
     let retentionChartInstance = null;
 
+    function toLocalISOString(d) {
+        const pad = (n) => (n < 10 ? '0' + n : n);
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    }
+
     function setDateRange(range) {
         const today = new Date();
-        const end = today.toISOString().split('T')[0];
         let start = new Date();
         
         if (range === 'today') {
-            // keep start = today
+            start.setHours(0, 0, 0, 0);
         } else if (range === '7days') {
             start.setDate(today.getDate() - 7);
         } else if (range === '30days') {
             start.setDate(today.getDate() - 30);
         }
         
-        document.getElementById('startDate').value = start.toISOString().split('T')[0];
-        document.getElementById('endDate').value = end;
+        document.getElementById('startDate').value = toLocalISOString(start);
+        document.getElementById('endDate').value = toLocalISOString(today);
         loadMetrics();
     }
 
     async function loadMetrics() {
-
-
         document.getElementById('loading').style.display = 'inline-block';
         
         const start = document.getElementById('startDate').value;
@@ -152,8 +154,8 @@
         let query = db.collection('events');
         
         if (start && end) {
-            const startDate = new Date(start + 'T00:00:00');
-            const endDate = new Date(end + 'T23:59:59');
+            const startDate = new Date(start);
+            const endDate = new Date(end);
             query = query.where('createdAt', '>=', startDate).where('createdAt', '<=', endDate);
         }
 
