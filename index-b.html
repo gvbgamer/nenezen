@@ -322,6 +322,30 @@
 
     <!-- ETAPA 1 -->
     <div class="step active" id="step1" style="padding-top: 5px;">
+        <div id="autoLoadContainer" style="margin-bottom: 20px; text-align: center;">
+            <p style="font-size: 14px; font-weight: bold; color: var(--primary-blue); margin-bottom: 8px;">Tu diagnóstico gratuito se está cargando...</p>
+            <div style="width: 100%; background: #e0e0e0; border-radius: 10px; height: 14px; overflow: hidden; margin: 0 auto; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
+                <div id="autoLoadBar" style="width: 0%; height: 100%; background: var(--primary-green); transition: width 0.1s linear;"></div>
+            </div>
+        </div>
+
+        <script>
+            setTimeout(() => {
+                let progress = 0;
+                let bar = document.getElementById('autoLoadBar');
+                let interval = setInterval(() => {
+                    progress += 1;
+                    if (bar) bar.style.width = progress + '%';
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        // Redirect automatically if still on Step 1
+                        if (document.getElementById('step1').classList.contains('active')) {
+                            nextStep(2);
+                        }
+                    }
+                }, 80); // 8 seconds total
+            }, 500);
+        </script>
         <h2 style="font-size: 20px; line-height: 1.2; margin-bottom: 0;">Descubre en 3 minutos cómo<br>enseñar a tu bebé a <span class="highlight-blue">dormir sin estar amamantando</span></h2>
         <p class="text-center" style="font-size: 13px; font-weight: bold; margin-top: 5px; margin-bottom: 12px;">De forma gentil con la Técnica de la Vaquita</p>
         
@@ -334,7 +358,7 @@
             </p>
         </div>
 
-        <button class="btn-primary btn-green btn-pulse" style="margin-top: 5px; padding: 15px; font-size: 17px;" onclick="nextStep(2)">🎁 Comenzar ahora</button>
+
         
         <div style="font-size: 11px; text-align: center; margin-top: 12px; color: var(--text-muted); display: flex; justify-content: space-around;">
             <span>⏱️ 60 segundos</span>
