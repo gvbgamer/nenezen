@@ -219,6 +219,24 @@
             animation: pulse 1.5s infinite;
         }
 
+        @keyframes pulse-alert {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.6); }
+            70% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(255, 204, 0, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); }
+        }
+        .alert-pulse {
+            animation: pulse-alert 2s infinite;
+        }
+
+        @keyframes micro-zoom {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .img-zoom {
+            animation: micro-zoom 4s ease-in-out infinite;
+        }
+
         .btn-primary:active { opacity: 0.8; }
 
         input[type="text"] {
@@ -343,15 +361,15 @@
                             nextStep(2);
                         }
                     }
-                }, 80); // 8 seconds total
+                }, 40); // 4 seconds total
             }, 500);
         </script>
         <h2 style="font-size: 20px; line-height: 1.2; margin-bottom: 0;">Descubre en 3 minutos cómo<br>enseñar a tu bebé a <span class="highlight-blue">dormir sin estar amamantando</span></h2>
         <p class="text-center" style="font-size: 13px; font-weight: bold; margin-top: 5px; margin-bottom: 12px;">De forma gentil con la Técnica de la Vaquita</p>
         
-        <img src="mecanismo.jpg" loading="lazy" class="main-image" style="width: 100%; max-width: 350px; border-radius: 8px; display: block; margin: 8px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" alt="Mecanismo Secreto">
+        <img src="mecanismo.jpg" loading="lazy" class="main-image img-zoom" style="width: 100%; max-width: 350px; border-radius: 8px; display: block; margin: 8px auto; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" alt="Mecanismo Secreto">
         
-        <div style="background-color: #FFFACD; border: 1px solid #FFE066; border-radius: 8px; padding: 10px 12px; margin: 15px 0; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+        <div class="alert-pulse" style="background-color: #FFFACD; border: 1px solid #FFE066; border-radius: 8px; padding: 10px 12px; margin: 15px 0; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
             <span style="font-size: 24px;">⚠️</span>
             <p style="font-size: 12px; color: #5a4b00; margin: 0; line-height: 1.3; text-align: left;">
                 <b>Atención:</b> Solo tenemos 14 diagnósticos gratuitos disponibles para el día de hoy. <i>(Límite de 1 acceso por madre para evitar colapso del sistema).</i>
@@ -981,6 +999,50 @@
             }
         }
     });
+</script>
+
+<!-- Exit Intent / Back Redirect Popup -->
+<div id="exitPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 99999; justify-content: center; align-items: center; padding: 20px;">
+    <div style="background: white; border-radius: 12px; padding: 25px; text-align: center; max-width: 350px; position: relative; animation: fadeIn 0.3s ease;">
+        <div onclick="closeExitPopup()" style="position: absolute; top: 10px; right: 15px; font-size: 20px; color: #999; cursor: pointer;">&times;</div>
+        <h2 style="color: #d32f2f; margin-bottom: 10px; font-size: 24px;">¡Espera! 🎁</h2>
+        <p style="font-size: 15px; color: #333; margin-bottom: 20px; line-height: 1.4;">Si completas el diagnóstico ahora, desbloquearás un <b>BONO EXCLUSIVO</b> totalmente gratis al final.</p>
+        <button class="btn-primary btn-green btn-pulse" style="font-size: 16px; padding: 15px; width: 100%;" onclick="continueAfterPopup()">¡Quiero mi bono y continuar!</button>
+    </div>
+</div>
+
+<script>
+    let backAlertShown = false;
+
+    // Habilita a armadilha do botão de voltar após o primeiro toque na tela (regra dos navegadores mobile)
+    document.body.addEventListener('click', function() {
+        if (!window.history.state || window.history.state.page !== 'trap') {
+            window.history.pushState({page: 'trap'}, "", "");
+        }
+    }, { once: true });
+
+    // Tenta forçar logo no carregamento (funciona em alguns navegadores)
+    window.history.pushState({page: 'trap'}, "", "");
+
+    window.addEventListener('popstate', function(event) {
+        // Se está na Etapa 1 e clicou em voltar
+        if (document.getElementById('step1').classList.contains('active') && !backAlertShown) {
+            document.getElementById('exitPopup').style.display = 'flex';
+            backAlertShown = true;
+            
+            // Re-insere o histórico para evitar que ele feche a página de verdade
+            window.history.pushState({page: 'trap'}, "", "");
+        }
+    });
+
+    function closeExitPopup() {
+        document.getElementById('exitPopup').style.display = 'none';
+    }
+
+    function continueAfterPopup() {
+        closeExitPopup();
+        nextStep(2); // Avança pra próxima etapa como incentivo
+    }
 </script>
 
 </body>
